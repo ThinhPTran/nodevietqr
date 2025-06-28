@@ -1,0 +1,20 @@
+{
+  "name": "vietqr-generator",
+  "version": "1.0.0",
+  "description": "A Node.js console app to generate VietQR codes.",
+  "main": "vietqr.js",
+  "scripts": {
+    "start": "node vietqr.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "vietqr",
+    "qr",
+    "napas"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "qrcode": "^1.5.3"
+  }
+}
