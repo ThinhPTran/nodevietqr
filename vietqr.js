@@ -10,6 +10,7 @@
  */
 
 const qrcode = require('qrcode');
+const { crc16 } = require('easy-crc');
 const fs = require('fs');
 const path = require('path');
 
@@ -23,23 +24,9 @@ const path = require('path');
  * @returns {string} The calculated CRC as a 4-character uppercase hexadecimal string.
  */
 function calculateCRC16_CCITT_FALSE(data) {
-    let crc = 0xFFFF;
-    const buffer = Buffer.isBuffer(data) ? data : Buffer.from(data, 'utf-8');
-
-    for (let i = 0; i < buffer.length; i++) {
-        crc ^= buffer[i] << 8;
-        for (let j = 0; j < 8; j++) {
-            if ((crc & 0x8000) !== 0) {
-                crc = (crc << 1) ^ 0x1021;
-            } else {
-                crc <<= 1;
-            }
-        }
-    }
-    // The result needs to be a 16-bit unsigned integer.
-    crc &= 0xFFFF;
-    // Format as a 4-character uppercase hex string, padding with '0' if necessary.
-    return crc.toString(16).toUpperCase().padStart(4, '0');
+    const buffer = Buffer.from(data, 'utf-8');
+    const checksum = crc16('CCITT-FALSE', buffer);
+    return checksum.toString(16).toUpperCase().padStart(4, '0');
 }
 
 
@@ -183,6 +170,14 @@ Example (Static QR):
     await generateQRImageFile(options, outputPath);
 }
 
+module.exports = {
+    calculateCRC16_CCITT_FALSE,
+    formatTLV,
+    buildVietQR,
+    generateQRImageFile,
+    main
+};
 
-// --- Run the application ---
-main();
+if (require.main === module) {
+    main();
+}
